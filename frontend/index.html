@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SpreadScope</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header class="container">
+    <h1>📈 SpreadScope</h1>
+    <p class="subtitle">Мониторинг спредов между биржами + конвертер активов (MVP)</p>
+  </header>
+
+  <main class="container grid">
+    <!-- Converter -->
+    <section class="card">
+      <h2>💱 Конвертер (локальные котировки)</h2>
+
+      <div class="converter-grid">
+        <div>
+          <label for="fromAsset">Из</label>
+          <select id="fromAsset"></select>
+        </div>
+
+        <div>
+          <label for="toAsset">В</label>
+          <select id="toAsset"></select>
+        </div>
+
+        <div>
+          <label for="amount">Сумма</label>
+          <input id="amount" type="text" placeholder="Например: 100" />
+        </div>
+
+        <div class="converter-actions">
+          <button id="swapBtn" type="button">Swap ⇄</button>
+          <button id="convertBtn" type="button">Конвертировать</button>
+        </div>
+      </div>
+
+      <div class="converter-info">
+        <p id="pairRate">Курс: —</p>
+        <p id="convertResult">Результат: —</p>
+        <p id="convertError" class="error"></p>
+      </div>
+    </section>
+
+    <!-- Spreads -->
+    <section class="card">
+      <div class="section-header">
+        <h2>📊 Спреды между биржами</h2>
+        <div class="actions">
+          <button id="refreshSpreadsBtn" type="button">Обновить</button>
+        </div>
+      </div>
+
+      <div class="filters">
+        <input id="symbolFilter" type="text" placeholder="Фильтр по symbol (например BTC_USDT)" />
+      </div>
+
+      <div class="table-wrap">
+        <table id="spreadsTable">
+          <thead>
+            <tr>
+              <th>Symbol</th>
+              <th>Low Exchange</th>
+              <th>Low Price</th>
+              <th>High Exchange</th>
+              <th>High Price</th>
+              <th>Spread</th>
+              <th>Spread %</th>
+            </tr>
+          </thead>
+          <tbody id="spreadsBody">
+            <tr><td colspan="7" class="muted">Загрузка...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container footer">
+    <small>SpreadScope MVP • FastAPI + Vanilla JS</small>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
