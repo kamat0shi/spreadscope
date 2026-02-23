@@ -1,5 +1,6 @@
 ```markdown
 # As Is Architecture (SpreadScope Sprint 1 / MVP)
+```
 
 ```mermaid
 flowchart TB
