@@ -125,6 +125,7 @@
 ### Вариант 1 (Python MVP / локально)
 ```bash
 python app.py
+```
 
 ---
 
