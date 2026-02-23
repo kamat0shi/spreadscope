@@ -4,7 +4,8 @@
 flowchart TB
     U[User / Browser] --> FE[Frontend UI\nHTML/CSS/JS\nSpreads / Converter / Watchlist / History]
 
-    FE -->|REST API| API[Backend API (FastAPI)\nControllers / Endpoints]
+    FE -->|REST API| API[Backend API (FastAPI)
+        Controllers / Endpoints]
     FE -->|WebSocket| WS[WS Endpoint / Live Stream]
 
     API --> S1[Spread Calculation Service]
@@ -34,7 +35,5 @@ flowchart TB
     AD3 --> EXT3[(Ourbit API)]
 
     POLL --> QC
-
-    ---
 ```
 
