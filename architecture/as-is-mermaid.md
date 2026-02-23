@@ -3,24 +3,24 @@
 ```
 
 ```mermaid
-flowchart TB
-    U[User / Browser] --> FE[frontend/index.html\nfrontend/app.js\nfrontend/style.css]
+flowchart LR
+    U["User / Browser"] --> FE["Frontend UI<br/>index.html / app.js / style.css"]
 
-    FE -->|GET /api/spreads| APP[backend/app.py (FastAPI)]
+    FE -->|GET /api/spreads| APP["FastAPI App<br/>backend/app.py"]
     FE -->|GET /api/quotes| APP
     FE -->|GET /api/converter/rates| APP
     FE -->|GET /health| APP
     FE -->|WS /ws?exchange=...| APP
 
-    APP --> EXCH[backend/exchanges.py\nEXCH_DEF + parsers + normalize_record]
-    APP --> SPR[backend/services/spreads.py\ncalculate_spreads()]
-    APP --> RATES[backend/data/rates.json]
+    APP --> EXCH["Exchange config + parsers<br/>backend/exchanges.py"]
+    APP --> SPR["Spread service<br/>backend/services/spreads.py"]
+    APP --> RATES["Local converter rates<br/>backend/data/rates.json"]
 
-    APP --> PRICES[(In-memory cache\nPRICES)]
-    APP --> META[(In-memory cache\nMETA)]
-    APP --> SUBS[(WS subscribers\nSUBS)]
+    APP --> PRICES[("In-memory cache<br/>PRICES")]
+    APP --> META[("In-memory cache<br/>META")]
+    APP --> SUBS[("WS subscribers<br/>SUBS")]
 
-    APP -->|polling via aiohttp| GATE[(Gate API)]
-    APP -->|polling via aiohttp| MEXC[(MEXC API)]
-    APP -->|polling via aiohttp| OURBIT[(Ourbit API)]
+    APP -->|aiohttp polling| GATE[("Gate API")]
+    APP -->|aiohttp polling| MEXC[("MEXC API")]
+    APP -->|aiohttp polling| OURBIT[("Ourbit API")]
 ```
