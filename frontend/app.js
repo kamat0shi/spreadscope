@@ -147,6 +147,16 @@ const spreadsBodyEl = document.getElementById("spreadsBody");
 const refreshSpreadsBtn = document.getElementById("refreshSpreadsBtn");
 const symbolFilterEl = document.getElementById("symbolFilter");
 
+const exchChkEls = Array.from(document.querySelectorAll(".exchChk"));
+const sortSpreadsBtn = document.getElementById("sortSpreadsBtn");
+
+let sortDesc = true; 
+
+function getSelectedExchanges() {
+  const selected = exchChkEls.filter(chk => chk.checked).map(chk => chk.value);
+  return selected; 
+}
+
 let spreadsData = [];
 
 function renderSpreadsTable(rows) {
@@ -174,18 +184,27 @@ function renderSpreadsTable(rows) {
 
 function applySpreadsFilter() {
   const q = symbolFilterEl.value.trim().toUpperCase();
-  if (!q) {
-    renderSpreadsTable(spreadsData);
-    return;
+  let rows = spreadsData;
+
+  if (q) {
+    rows = rows.filter((r) => String(r.symbol || "").toUpperCase().includes(q));
   }
-  const filtered = spreadsData.filter((r) => String(r.symbol || "").toUpperCase().includes(q));
-  renderSpreadsTable(filtered);
+
+  rows = rows.slice().sort((a, b) => {
+    const av = Number(a.spread_pct) || 0;
+    const bv = Number(b.spread_pct) || 0;
+    return sortDesc ? (bv - av) : (av - bv);
+  });
+
+  renderSpreadsTable(rows);
 }
 
 async function loadSpreads() {
   spreadsBodyEl.innerHTML = `<tr><td colspan="7" class="muted">Загрузка...</td></tr>`;
   try {
-    const res = await fetch(`${API_BASE}/api/spreads?limit=100`);
+    const selected = getSelectedExchanges();
+    const exchParam = selected.length ? `&exchanges=${encodeURIComponent(selected.join(","))}` : "";
+    const res = await fetch(`${API_BASE}/api/spreads?limit=100${exchParam}`);
     if (!res.ok) throw new Error(`Failed to load spreads: ${res.status}`);
     const data = await res.json();
     spreadsData = Array.isArray(data.records) ? data.records : [];
@@ -198,6 +217,14 @@ async function loadSpreads() {
 
 refreshSpreadsBtn.addEventListener("click", loadSpreads);
 symbolFilterEl.addEventListener("input", applySpreadsFilter);
+
+exchChkEls.forEach(chk => chk.addEventListener("change", loadSpreads));
+
+sortSpreadsBtn.addEventListener("click", () => {
+  sortDesc = !sortDesc;
+  sortSpreadsBtn.textContent = `Sort: Spread % ${sortDesc ? "↓" : "↑"}`;
+  applySpreadsFilter();
+});
 
 // ---------- Init ----------
 async function init() {

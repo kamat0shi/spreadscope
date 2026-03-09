@@ -57,6 +57,14 @@
 
       <div class="filters">
         <input id="symbolFilter" type="text" placeholder="Фильтр по symbol (например BTC_USDT)" />
+
+        <div class="exch-filters">
+            <label><input type="checkbox" class="exchChk" value="gate" checked /> gate</label>
+            <label><input type="checkbox" class="exchChk" value="mexc" checked /> mexc</label>
+            <label><input type="checkbox" class="exchChk" value="ourbit" checked /> ourbit</label>
+        </div>
+
+        <button id="sortSpreadsBtn" type="button">Sort: Spread % ↓</button>
       </div>
 
       <div class="table-wrap">
