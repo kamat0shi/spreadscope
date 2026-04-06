@@ -13,75 +13,143 @@
   </header>
 
   <main class="container grid">
-    <!-- Converter -->
-    <section class="card">
-      <h2>💱 Конвертер (локальные котировки)</h2>
-
-      <div class="converter-grid">
-        <div>
-          <label for="fromAsset">Из</label>
-          <select id="fromAsset"></select>
-        </div>
-
-        <div>
-          <label for="toAsset">В</label>
-          <select id="toAsset"></select>
-        </div>
-
-        <div>
-          <label for="amount">Сумма</label>
-          <input id="amount" type="text" placeholder="Например: 100" />
-        </div>
-
+    <!-- Auth -->
+    <section class="card auth-card" id="authSection" aria-label="Аккаунт">
+      <h2>👤 Аккаунт</h2>
+      <div id="authForm" class="auth-form">
+        <input id="authUsername" type="text" placeholder="Имя пользователя" aria-label="Имя пользователя" />
+        <input id="authPassword" type="password" placeholder="Пароль" aria-label="Пароль" />
         <div class="converter-actions">
-          <button id="swapBtn" type="button">Swap ⇄</button>
-          <button id="convertBtn" type="button">Конвертировать</button>
+          <button id="loginBtn" type="button">Войти</button>
+          <button id="registerBtn" type="button">Регистрация</button>
         </div>
+        <p id="authError" class="error" aria-live="assertive"></p>
       </div>
-
-      <div class="converter-info">
-        <p id="pairRate">Курс: —</p>
-        <p id="convertResult">Результат: —</p>
-        <p id="convertError" class="error"></p>
+      <div id="authInfo" class="auth-info" style="display:none">
+        <p>Пользователь: <strong id="authUserDisplay"></strong></p>
+        <button id="logoutBtn" type="button">Выйти</button>
       </div>
     </section>
 
-    <!-- Spreads -->
-    <section class="card">
-      <div class="section-header">
-        <h2>📊 Спреды между биржами</h2>
-        <div class="actions">
-          <button id="refreshSpreadsBtn" type="button">Обновить</button>
+    <!-- Arbitrage Calculator -->
+    <section class="card" aria-label="Арбитражный калькулятор">
+      <h2>💰 Арбитражный калькулятор</h2>
+      <p class="hint" id="arbHint">Нажмите на строку в таблице спредов, чтобы рассчитать арбитраж</p>
+
+      <div id="arbCalc" style="display:none">
+        <div class="arb-pair">
+          <span id="arbSymbol" class="arb-symbol"></span>
+          <span class="arb-spread-badge" id="arbSpreadBadge"></span>
         </div>
+
+        <div class="arb-details">
+          <div class="arb-side arb-buy">
+            <span class="arb-label">Купить на</span>
+            <strong id="arbBuyExchange"></strong>
+            <span class="arb-price" id="arbBuyPrice"></span>
+          </div>
+          <span class="arb-arrow">→</span>
+          <div class="arb-side arb-sell">
+            <span class="arb-label">Продать на</span>
+            <strong id="arbSellExchange"></strong>
+            <span class="arb-price" id="arbSellPrice"></span>
+          </div>
+        </div>
+
+        <div class="arb-input-row">
+          <label for="arbAmount">Сумма (USDT)</label>
+          <input id="arbAmount" type="text" inputmode="decimal" placeholder="Например: 1000" autofocus />
+        </div>
+
+        <div class="arb-results" id="arbResults" style="display:none">
+          <div class="arb-result-row">
+            <span>Количество токенов:</span>
+            <strong id="arbTokens"></strong>
+          </div>
+          <div class="arb-result-row">
+            <span>Выручка при продаже:</span>
+            <strong id="arbRevenue"></strong>
+          </div>
+          <div class="arb-result-row arb-profit-row">
+            <span>Профит:</span>
+            <strong id="arbProfit" class="badge-up"></strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="converter-divider"></div>
+
+      <details class="converter-details">
+        <summary>💱 Конвертер валют (локальные котировки)</summary>
+        <div class="converter-grid">
+          <div>
+            <label for="fromAsset">Из</label>
+            <select id="fromAsset" aria-label="Исходная валюта"></select>
+          </div>
+          <div>
+            <label for="toAsset">В</label>
+            <select id="toAsset" aria-label="Целевая валюта"></select>
+          </div>
+          <div>
+            <label for="amount">Сумма</label>
+            <input id="amount" type="text" inputmode="decimal" placeholder="Например: 100" />
+          </div>
+          <div class="converter-actions">
+            <button id="swapBtn" type="button" title="Поменять валюты местами" aria-label="Поменять валюты местами">Swap ⇄</button>
+            <button id="convertBtn" type="button" aria-label="Выполнить конвертацию">Конвертировать</button>
+          </div>
+        </div>
+        <div class="converter-info">
+          <p id="pairRate">Курс: —</p>
+          <p id="convertResult" aria-live="polite">Результат: —</p>
+          <p id="convertError" class="error" aria-live="assertive"></p>
+        </div>
+      </details>
+    </section>
+
+    <!-- Spreads -->
+    <section class="card" aria-label="Таблица спредов">
+      <div class="section-header">
+        <h2>📊 Спреды</h2>
+        <div class="actions">
+          <button id="refreshSpreadsBtn" type="button" aria-label="Обновить таблицу спредов">Обновить</button>
+        </div>
+      </div>
+
+      <!-- Вкладки -->
+      <div class="tabs" id="spreadTabs">
+        <button class="tab active" data-tab="all">Все спреды</button>
+        <button class="tab" data-tab="favorites" id="tabFavorites" style="display:none">⭐ Избранное <span id="favCount" class="tab-count">0</span></button>
       </div>
 
       <div class="filters">
-        <input id="symbolFilter" type="text" placeholder="Фильтр по symbol (например BTC_USDT)" />
+        <input id="symbolFilter" type="text" placeholder="Фильтр по паре (например BTC_USDT)" aria-label="Фильтр по торговой паре" />
 
         <div class="exch-filters">
-            <label><input type="checkbox" class="exchChk" value="gate" checked /> gate</label>
-            <label><input type="checkbox" class="exchChk" value="mexc" checked /> mexc</label>
-            <label><input type="checkbox" class="exchChk" value="ourbit" checked /> ourbit</label>
+            <label><input type="checkbox" class="exchChk" value="gate" checked /> Gate.io</label>
+            <label><input type="checkbox" class="exchChk" value="mexc" checked /> MEXC</label>
+            <label><input type="checkbox" class="exchChk" value="ourbit" checked /> OurBit</label>
         </div>
 
-        <button id="sortSpreadsBtn" type="button">Sort: Spread % ↓</button>
+        <button id="sortSpreadsBtn" type="button" title="Изменить порядок сортировки по спреду" aria-label="Сортировка по спреду">Сортировка: Спред % ↓</button>
       </div>
 
       <div class="table-wrap">
-        <table id="spreadsTable">
+        <table id="spreadsTable" role="table" aria-label="Спреды между биржами">
           <thead>
             <tr>
-              <th>Symbol</th>
-              <th>Low Exchange</th>
-              <th>Low Price</th>
-              <th>High Exchange</th>
-              <th>High Price</th>
-              <th>Spread</th>
-              <th>Spread %</th>
+              <th id="thStar" class="col-star" style="display:none"></th>
+              <th>Пара</th>
+              <th>Биржа (мин)</th>
+              <th>Цена (мин)</th>
+              <th>Биржа (макс)</th>
+              <th>Цена (макс)</th>
+              <th>Спред</th>
+              <th>Спред %</th>
             </tr>
           </thead>
-          <tbody id="spreadsBody">
-            <tr><td colspan="7" class="muted">Загрузка...</td></tr>
+          <tbody id="spreadsBody" aria-live="polite">
+            <tr><td colspan="8" class="muted">Загрузка данных... Спреды появятся через несколько секунд после запуска сервера.</td></tr>
           </tbody>
         </table>
       </div>

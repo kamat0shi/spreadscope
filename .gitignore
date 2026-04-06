@@ -1,3 +1,10 @@
+# Claude Code
+CLAUDE.md
+
+# Database
+*.db
+test_spreadscope.db
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

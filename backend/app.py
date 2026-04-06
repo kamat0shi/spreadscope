@@ -16,6 +16,11 @@ from fastapi.staticfiles import StaticFiles
 
 from backend.exchanges import EXCH_DEF, normalize_record
 from backend.services.spreads import calculate_spreads
+from backend.database import engine, Base
+from backend.routers.auth import router as auth_router
+from backend.routers.watchlist import router as watchlist_router
+
+Base.metadata.create_all(bind=engine)
 
 load_dotenv()
 
@@ -28,7 +33,10 @@ INTERVAL_MIN = float(os.getenv("INTERVAL_MIN", "0.6"))
 INTERVAL_MAX = float(os.getenv("INTERVAL_MAX", "1.2"))
 HTTP_TIMEOUT = float(os.getenv("HTTP_TIMEOUT", "10"))
 
-app = FastAPI(title="SpreadScope API", version="0.1.0")
+app = FastAPI(title="SpreadScope API", version="0.2.0")
+
+app.include_router(auth_router, prefix="/api/auth")
+app.include_router(watchlist_router, prefix="/api/watchlist")
 
 app.add_middleware(
     CORSMiddleware,
